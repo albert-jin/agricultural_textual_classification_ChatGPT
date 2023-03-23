@@ -21,7 +21,7 @@ def classify_text_davinci(sentence, categories, prompt_template, model_type="tex
     url = "https://api.openai.com/v1/completions"
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer " + api_key,
+        "Authorization": "Bearer " + api_key,
     }
     # prompt = f"Classify the following sentence into one of the given categories: {categories}\n\nSentence: {sentence}\nCategory: "
     # DEFAULT: "Classify the following sentence into one of the given categories: {}\n\nSentence: {}\nCategory: "
@@ -47,7 +47,7 @@ def classify_text_davinci(sentence, categories, prompt_template, model_type="tex
     # 解析API响应并提取预测类标签
     try:
         response_data = response.json()
-        print(json.dumps(response_data))
+        # print(json.dumps(response_data))
         predicted_category = response_data["choices"][0]["text"].strip()
     except KeyError:
         print("Error in parsing API response")
@@ -83,7 +83,7 @@ def classify_text_turbo(sentences, categories, prompt_template):
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer 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"
+        "Authorization": "Bearer " + api_key
     }
 
     # DEFAULT: "Classify the following sentence into one of the given categories: {}\n\nSentence: {}\nCategory: "
@@ -111,7 +111,7 @@ def classify_text_turbo(sentences, categories, prompt_template):
     # 解析API响应并提取预测类标签
     try:
         response_data = response.json()
-        print(json.dumps(response_data))
+        # print(json.dumps(response_data))
         predicted_category = response_data["choices"][0]["message"]["content"].strip()
     except KeyError:
         print("Error in parsing API response")
@@ -137,7 +137,7 @@ def get_answer_davinci(sentence, categories, prompt_template, model_type="text-d
     url = "https://api.openai.com/v1/completions"
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer " + api_key,
+        "Authorization": "Bearer " + api_key,
     }
     # prompt = f"Classify the following sentence into one of the given categories: {categories}\n\nSentence: {sentence}\nCategory: "
     # DEFAULT: "Classify the following sentence into one of the given categories: {}\n\nSentence: {}\nCategory: "
@@ -161,7 +161,7 @@ def get_answer_davinci(sentence, categories, prompt_template, model_type="text-d
     # 解析API响应并提取预测类标签
     try:
         response_data = response.json()
-        print(json.dumps(response_data))
+        # print(json.dumps(response_data))
         predicted_answer = [response_data["choices"][i]["text"].strip() for i in range(choices)]
         return predicted_answer
     except KeyError:
@@ -175,7 +175,7 @@ def get_answer_turbo(sentences, categories, prompt_template):
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer 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"
+        "Authorization": "Bearer " + api_key
     }
 
     # DEFAULT: "Classify the following sentence into one of the given categories: {}\n\nSentence: {}\nCategory: "
@@ -203,7 +203,7 @@ def get_answer_turbo(sentences, categories, prompt_template):
     # 解析API响应并提取预测类标签
     try:
         response_data = response.json()
-        print(json.dumps(response_data))
+        # print(json.dumps(response_data))
         predicted_answer = [response_data["choices"][i]["message"]["content"].strip() for i in range(choices)]
         return predicted_answer
     except KeyError:

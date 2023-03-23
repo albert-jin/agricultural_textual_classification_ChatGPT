@@ -33,8 +33,8 @@ def main(args):
             if success_count > 1000:
                 # print('预测量已足够多.')
                 break
-            query_text = line['text']
-            real_tag = line['label']
+            query_text = eval(line.strip())['text']
+            real_tag = eval(line.strip())['label']
             if query_text not in collected_sents:
                 if 'davinci' in args.model_type:
                     # classify_text_davinci(query_text, categories, args.prompt_template)
