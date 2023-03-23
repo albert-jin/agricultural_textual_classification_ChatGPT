@@ -1,0 +1,8 @@
+#.gitignore
+
+/Chinese_Agri_News/train.txt
+/Chinese_Agri_News/test.txt
+/Chinese_Agri_News/train.json
+/Chinese_Agri_News/test.json
+
+#example_from_github.py
