@@ -17,7 +17,7 @@ def main(args):
     categories = data_meta[args.dataset]
     source_file_ChatGPT = f'./data/{args.dataset}/test.json'
     answers_file_ChatGPT = f'./data/{args.dataset}/answers_{args.model_type}.json'
-    if os.path.exists(answers_file_ChatGPT):
+    if not os.path.exists(answers_file_ChatGPT):
         open(answers_file_ChatGPT, 'wt', encoding='utf-8').close()
     collected_sents = []
     with open(answers_file_ChatGPT,'rt',encoding='utf-8') as inp:
