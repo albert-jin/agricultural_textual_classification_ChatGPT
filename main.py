@@ -1,7 +1,7 @@
 import argparse
 import os.path
 from tqdm import tqdm
-from utils import classify_text_turbo, classify_text_davinci, get_answer_turbo, get_answer_davinci
+from utils import classify_text_turbo, classify_text_davinci, get_answer_turbo, get_answer_davinci, parser_classification
 # import openai
 import json
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score, confusion_matrix, classification_report
@@ -60,19 +60,17 @@ def main(args):
         for line in lines:
             answers, real_tag = eval(line.strip())['answers'], eval(line.strip())['real_tag']
             assert isinstance(real_tag, int)
-            pred_tag = categories.index(answers[0])
+            pred_tag = parser_classification(answers[0], categories)  # 默认用第一个答案映射
             pred_list.append(pred_tag)
             real_list.append(real_tag)
             print('pred_list: ', pred_list)
             print('real_list: ', real_list)
             print('-----------------------------------------')
+            print('confusion_matrix:')
             print(confusion_matrix(real_list, pred_list))
-            micro_f1_score = f1_score(real_list, pred_list, average='micro')
-            macro_f1_score = f1_score(real_list, pred_list, average='macro')
-            weighted_f1_score = f1_score(real_list, pred_list, average='weighted')
-            recall_weighted = recall_score(real_list, pred_list, average='weighted')
-            precision_weighted = precision_score(real_list, pred_list, average='weighted')
+            print('classification_report:')
             print(classification_report(real_list, pred_list, target_names=categories))
+            print('-----------------------------------------')
             """
             average：字符串类型，取值为 [None, ‘binary’ (default), ‘micro’, ‘macro’, ‘samples’, ‘weighted’]。多分类必须的参数，如果为None，则返回每一类的recall，否则，根据其参数返回整体的召回率。
             'macro'：用于多分类，只有两个属性可以选择 ‘macro’ 和 ‘weighted’ 。' macro '：计算每个标签的指标，并计算它们的未加权平均值。不考虑样本类别是否平衡。' weighted '：计算每个标签的指标，并找到它们的平均值，对(每个标签的真实实例的数量)进行加权。
@@ -80,7 +78,14 @@ def main(args):
             'macro': 计算每个标签的指标，并计算它们的未加权平均值。不考虑样本类别是否平衡。
             'weighted': 计算每个标签的指标，并找到它们的平均值，对(每个标签的真实实例的数量)进行加权。This alters ‘macro’ to account for label imbalance; it can result in an F-score that is not between precision and recall.
             """
-            print(f"'\nmicro_f1_score: ', {micro_f1_score}, '\nmacro_f1_score: ', {macro_f1_score}, '\nweighted_f1_score: ' {weighted_f1_score}, '\nrecall_weighted: ', {recall_weighted}, '\nprecision_weighted: ', {precision_weighted}")
+            accuracy = accuracy_score(real_list, pred_list)
+            micro_f1_score = f1_score(real_list, pred_list, average='micro')
+            macro_f1_score = f1_score(real_list, pred_list, average='macro')
+            weighted_f1_score = f1_score(real_list, pred_list, average='weighted')
+            recall_weighted = recall_score(real_list, pred_list, average='weighted')
+            precision_weighted = precision_score(real_list, pred_list, average='weighted')
+            print(f"'accuracy': {accuracy},\n'micro_f1_score': {micro_f1_score}, \n'macro_f1_score': {macro_f1_score}, "
+                  f"\n'weighted_f1_score': {weighted_f1_score}, \n'recall_weighted': {recall_weighted}, \n'precision_weighted': {precision_weighted}")
 
 
     """
