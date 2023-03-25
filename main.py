@@ -26,6 +26,7 @@ def main(args):
         while line:
             collected_sents.append(eval(line.strip())['text'])
             line = inp.readline()
+    old_time = time.time()
     with open(source_file_ChatGPT,'rt',encoding='utf-8') as inp, open(answers_file_ChatGPT, 'at', encoding='utf-8') as oup:
         lines = inp.readlines()
         success_count = len(collected_sents)
@@ -47,6 +48,10 @@ def main(args):
                     print('Sentence: ', query_text, ', ChatGPT: ', answers)
                     json_row = {"text": query_text, "prompt": args.prompt_template, 'answers': answers, 'real_tag': real_tag}
                     oup.write(json.dumps(json_row, ensure_ascii=False) + '\n')
+                    new_time = time.time()
+                    if new_time - 30 > old_time:
+                        old_time = new_time
+                        oup.flush()
                     success_count += 1
                     stats['succ'] += 1
                 else:
