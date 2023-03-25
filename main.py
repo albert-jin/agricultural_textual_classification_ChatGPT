@@ -3,6 +3,7 @@ import os.path
 from tqdm import tqdm
 from utils import classify_text_turbo, classify_text_davinci, get_answer_turbo, get_answer_davinci, parser_classification
 # import openai
+import time, random
 import json
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score, confusion_matrix, classification_report
 
@@ -20,7 +21,7 @@ def main(args):
     if not os.path.exists(answers_file_ChatGPT):
         open(answers_file_ChatGPT, 'wt', encoding='utf-8').close()
     collected_sents = []
-    with open(answers_file_ChatGPT,'rt',encoding='utf-8') as inp:
+    with open(answers_file_ChatGPT, 'rt', encoding='utf-8') as inp:
         line = inp.readline()
         while line:
             collected_sents.append(eval(line.strip())['text'])
@@ -41,7 +42,7 @@ def main(args):
                     answers = get_answer_davinci(query_text, categories, args.prompt_template)
                 else:
                     # classify_text_turbo(query_text, categories, args.prompt_template)
-                    answers = get_answer_turbo(query_text, categories, args.prompt_template)
+                    answers = get_answer_turbo([query_text], categories, args.prompt_template)
                 if len(answers) != 0:
                     print('Sentence: ', query_text, ', ChatGPT: ', answers)
                     json_row = {"text": query_text, "prompt": args.prompt_template, 'answers': answers, 'real_tag': real_tag}
@@ -50,6 +51,7 @@ def main(args):
                     stats['succ'] += 1
                 else:
                     stats['fail'] +=1
+                time.sleep(random.random() + 1)
         print(stats)
 
     # calculate the prediction's performance using acc/ f1-micro/ f1-macro/ recall / precision
