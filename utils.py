@@ -27,7 +27,7 @@ def parser_classification(predicted_category: str, _categories: List[str]):
         raise Exception("no category matched with answer")
     except Exception as e:
         print(f"Error: {e.args}")
-        return -1
+        return 0  # 没办法，只能默认选择第一个标签作为类别了
 
 
 def classify_text_davinci(sentence, categories, prompt_template, model_type="text-davinci-003"):
