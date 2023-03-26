@@ -30,11 +30,13 @@ def main(args):
     with open(source_file_ChatGPT,'rt',encoding='utf-8') as inp, open(answers_file_ChatGPT, 'at', encoding='utf-8') as oup:
         lines = inp.readlines()
         success_count = len(collected_sents)
-        stats = {'succ':0, 'fail':0}
-        for line in tqdm(lines):
+        stats = {'succ':0, 'fail': 0}
+        for idx, line in tqdm(enumerate(lines)):
             if success_count > 1000:
                 # print('预测量已足够多.')
                 break
+            if args.dataset == 'Amazon_food_comments' and 500 < idx < 8922:  # 保证Amazon_food_comments数据集预测正负情感的比例一致 => 500:500
+                continue
             query_text = eval(line.strip())['text']
             real_tag = eval(line.strip())['label']
             if query_text not in collected_sents:
@@ -49,13 +51,14 @@ def main(args):
                     json_row = {"text": query_text, "prompt": args.prompt_template, 'answers': answers, 'real_tag': real_tag}
                     oup.write(json.dumps(json_row, ensure_ascii=False) + '\n')
                     new_time = time.time()
-                    if new_time - 30 > old_time:
+                    if new_time - 1 > old_time:
                         old_time = new_time
                         oup.flush()
                     success_count += 1
                     stats['succ'] += 1
                 else:
-                    stats['fail'] +=1
+                    stats['fail'] += 1
+                    time.sleep(30)  # 如果服务器端出问题，就暂停30s
                 time.sleep(random.random() + 1)
         print(stats)
 
